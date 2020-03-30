@@ -7,6 +7,8 @@ object Main extends App {
 
   println("Bienvenue au Chill-Out !")
 
+  // Bla bla
+
   while (true) {
     StdIn.readLine.toLowerCase match {
       case "adieu" | "adieu." => println("À la revoyure !"); System.exit(0)
