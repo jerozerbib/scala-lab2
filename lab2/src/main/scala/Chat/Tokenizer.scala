@@ -29,7 +29,6 @@ class Tokenizer(input: String) {
     case "punkipa" => PUNKIPA
     case "jackhammer" => JACKHAMMER
     case "tenebreuse" => TENEBREUSE
-    case "chips" => CHIPS
     case "commande" => COMMAND
     case "connaître" => CONNAITRE
     case "combien" => COMBIEN

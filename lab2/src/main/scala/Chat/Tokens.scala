@@ -32,8 +32,6 @@ object Tokens {
   val PUNKIPA: Token     = 20
   val JACKHAMMER: Token  = 21
   val TENEBREUSE: Token  = 22
-  val CROISSANT_BRAND: Token = 23
-  val CHIPS: Token       = 24
   // Identification
   val ME: Token          = 25
   val APPELLE: Token     = 26

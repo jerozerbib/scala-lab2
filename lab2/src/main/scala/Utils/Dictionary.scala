@@ -38,8 +38,6 @@ object Dictionary {
     "punkipa" -> "punkipa",
     "jackhammer" -> "jackhammer",
     "tenebreuse" -> "tenebreuse",
-    "chips" -> "chips",
-    "chip" -> "chips",
     "commande" -> "commande",
     "connaitre" -> "connaître",
     "connaître" -> "connaître",
