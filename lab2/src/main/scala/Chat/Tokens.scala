@@ -23,4 +23,31 @@ object Tokens {
   // State of mind
   val ASSOIFFE : Token   = 13
   val AFFAME : Token     = 14
+  // Brand
+  val MAISON: Token      = 15
+  val CAILLER: Token     = 16
+  val FARMER: Token      = 17
+  val BOXER: Token       = 18
+  val WITTEKOP: Token    = 19
+  val PUNKIPA: Token     = 20
+  val JACKHAMMER: Token  = 21
+  val TENEBREUSE: Token  = 22
+  val CROISSANT_BRAND: Token = 23
+  val CHIPS: Token       = 24
+  // Identification
+  val ME: Token          = 25
+  val APPELLE: Token     = 26
+  // Command
+  val COMMAND: Token     = 27
+  // Balance
+  val CONNAITRE: Token   = 28
+  val SOLDE: Token       = 29
+  // Price
+  val QUEL: Token        = 30
+  val EST: Token         = 31
+  val LE: Token          = 32
+  val PRIX: Token        = 33
+  val DE: Token          = 34
+  val COMBIEN: Token     = 35
+  val COUTE: Token       = 36
 }
