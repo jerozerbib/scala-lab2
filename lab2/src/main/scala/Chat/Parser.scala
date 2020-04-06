@@ -44,7 +44,6 @@ class Parser(tokenizer: Tokenizer) {
   }
 
   def getBeerBrand: (String, Double) =
-  // Search for brands
     curToken match {
       case FARMER => Products.beers("farmer")
       case BOXER => Products.beers("")
@@ -56,7 +55,6 @@ class Parser(tokenizer: Tokenizer) {
     }
 
   def getCroissantBrand: (String, Double) =
-  // Search for brands
     curToken match {
       case MAISON => Products.croissants("")
       case CAILLER => Products.croissants("cailler")
@@ -71,28 +69,32 @@ class Parser(tokenizer: Tokenizer) {
       curToken match {
         case BIERE =>
           readToken()
+          // Means there's a brand requested. Note that any token other than eol, et or ou will be considered as a brand.
+          // This means if you write anything that doesn't resolve to a brand, it will be interpreted as the default brand
+          // e.g : Bonjour je voudrais 2 bières balala => Bière Boxer
+          // Bonjour je voudrais 2 bières voudrais => Bière Boxer
           if (curToken != EOL && !(curToken == ET || curToken == OU)) {
             val beer = getBeerBrand
             readToken()
             curToken match {
               case ET =>
                 readToken()
-                And(Command(beer, numberOfProducts), parseCommand)
+                And(Product(beer, numberOfProducts), parseCommand)
               case OU =>
                 readToken()
-                Or(Command(beer, numberOfProducts), parseCommand)
-              case _ => Command(beer, numberOfProducts)
+                Or(Product(beer, numberOfProducts), parseCommand)
+              case _ => Product(beer, numberOfProducts)
             }
           } else {
             val beer = Products.beers("")
             curToken match {
               case ET =>
                 readToken()
-                And(Command(beer, numberOfProducts), parseCommand)
+                And(Product(beer, numberOfProducts), parseCommand)
               case OU =>
                 readToken()
-                Or(Command(beer, numberOfProducts), parseCommand)
-              case _ => Command(beer, numberOfProducts)
+                Or(Product(beer, numberOfProducts), parseCommand)
+              case _ => Product(beer, numberOfProducts)
             }
           }
         case CROISSANT =>
@@ -103,22 +105,22 @@ class Parser(tokenizer: Tokenizer) {
             curToken match {
               case ET =>
                 readToken()
-                And(Command(croissant, numberOfProducts), parseCommand)
+                And(Product(croissant, numberOfProducts), parseCommand)
               case OU =>
                 readToken()
-                Or(Command(croissant, numberOfProducts), parseCommand)
-              case _ => Command(croissant, numberOfProducts)
+                Or(Product(croissant, numberOfProducts), parseCommand)
+              case _ => Product(croissant, numberOfProducts)
             }
           } else {
             val croissant = Products.croissants("")
             curToken match {
               case ET =>
                 readToken()
-                And(Command(croissant, numberOfProducts), parseCommand)
+                And(Product(croissant, numberOfProducts), parseCommand)
               case OU =>
                 readToken()
-                Or(Command(croissant, numberOfProducts), parseCommand)
-              case _ => Command(croissant, numberOfProducts)
+                Or(Product(croissant, numberOfProducts), parseCommand)
+              case _ => Product(croissant, numberOfProducts)
             }
           }
         case _ => expected(BIERE, CROISSANT)
@@ -161,7 +163,7 @@ class Parser(tokenizer: Tokenizer) {
           eat(VOULOIR)
           eat(COMMAND)
           // TODO: recursive function for order to handle and / or
-          parseCommand
+          Command(parseCommand)
       }
     }
     else expected(BONJOUR, JE)
