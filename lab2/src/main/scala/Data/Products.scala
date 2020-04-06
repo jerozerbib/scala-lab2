@@ -5,17 +5,17 @@ object Products {
   // TODO: step 2 - You will also have to find a way to store the default type/brand of a product.
 
   // Can access using map operations. For example products("beers")("punkipa") to access punk ipa beer
-  val beers: Map[String, (String, Int)] = Map(
-    "farmer" -> ("Farmer", 1),
-    "wittekop" -> ("Wittekop",2),
-    "punkipa" -> ("PunkIPA",3),
-    "jackhammer" -> ("Jackhammer",3),
-    "tenebreuse" -> ("Ténébreuse",4)
-  ).withDefaultValue(("Boxer", 1))
+  val beers: Map[String, (String, Double)] = Map(
+    "farmer" -> ("Farmer", 1.0),
+    "wittekop" -> ("Wittekop",2.0),
+    "punkipa" -> ("PunkIPA",3.0),
+    "jackhammer" -> ("Jackhammer",3.0),
+    "tenebreuse" -> ("Ténébreuse",4.0)
+  ).withDefaultValue(("Boxer", 1.0))
 
-  val croissants: Map[String, (String, Int)] = Map(
-    "cailler" -> ("Cailler" -> 2)
-  ).withDefaultValue("Maison" -> 2)
+  val croissants: Map[String, (String, Double)] = Map(
+    "cailler" -> ("Cailler" -> 2.0)
+  ).withDefaultValue("Maison" -> 2.0)
 
   val products = Map(
     "beers" -> beers,

@@ -13,7 +13,11 @@ object Tree {
       * For example if we had a "+" node, we would add the values of its two children, then return the result.
       * @return the result of the computation
       */
-    def computePrice: Double = ???
+    def computePrice: Double = this match {
+      case Command((_, value), numberOfProducts) => numberOfProducts * value
+      case And(e1, e2) => e1.computePrice + e2.computePrice
+      case Or(e1, e2) => Math.min(e1.computePrice, e2.computePrice)     // Or takes the cheapest of all products
+    }
 
     /**
       * Return the output text of the current node, in order to write it in console.
@@ -23,6 +27,9 @@ object Tree {
       // Example cases
       case Thirsty() => "Eh bien, la chance est de votre côté, car nous offrons les meilleures bières de la région !"
       case Hungry() => "Pas de soucis, nous pouvons notamment vous offrir des croissants faits maisons !"
+      case Pseudonym(pseudo: String) => "Bonjour " + pseudo
+      case Command((name, _), numberOfProducts) => "Bah voilà, " + numberOfProducts + " " + name +
+        "! Cela coûte " + computePrice + " CHF"
     }
   }
 
@@ -32,4 +39,15 @@ object Tree {
   // Example cases
   case class Thirsty() extends ExprTree
   case class Hungry() extends ExprTree
+
+  // Identification
+  case class Pseudonym(pseudo: String) extends ExprTree
+
+  case class Command(product: (String, Double), numberOfProducts: Int) extends ExprTree
+  case class Beer(numberOfProducts: Int, value: Double) extends ExprTree
+  case class Croissant(numberOfProducts: Int, value: Double) extends ExprTree
+
+  case class And(e1: ExprTree, e2: ExprTree) extends ExprTree
+  case class Or(e1: ExprTree, e2: ExprTree) extends ExprTree
+
 }

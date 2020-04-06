@@ -15,10 +15,10 @@ object UsersInfo {
     * @param user the user to save
     */
   def registerUser(user: String): Unit = {
-    if (accounts.contains(user)) {
-      throw new Error("User " + user + " is already registered")
+    if (!accounts.contains(user)) {
+      accounts(user) = 30
     }
-    accounts(user) = 30
+    _activeUser = user
   }
 
   /**
