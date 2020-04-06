@@ -43,8 +43,8 @@ class Parser(tokenizer: Tokenizer) {
     Pseudonym(name)
   }
 
-  def getBeerBrand: (String, Double) =
-    curToken match {
+  def getBeerBrand(beerBrandToken: Token): (String, Double) =
+    beerBrandToken match {
       case FARMER => Products.beers("farmer")
       case BOXER => Products.beers("")
       case WITTEKOP => Products.beers("wittekop")
@@ -54,11 +54,29 @@ class Parser(tokenizer: Tokenizer) {
       case _ => Products.beers("")
     }
 
-  def getCroissantBrand: (String, Double) =
-    curToken match {
+  def getCroissantBrand(croissantBrandToken: Token): (String, Double) =
+    croissantBrandToken match {
       case MAISON => Products.croissants("")
       case CAILLER => Products.croissants("cailler")
       case _ => Products.croissants("")
+    }
+
+  def checkForBeerBrand: (String, Double) =
+    if (curToken != EOL && !(curToken == ET || curToken == OU)) {
+      val brandToken = curToken
+      readToken()
+      getBeerBrand(brandToken)
+    } else {
+      Products.beers("")
+    }
+
+  def checkForCroissantBrand: (String, Double) =
+    if (curToken != EOL && !(curToken == ET || curToken == OU)) {
+      val brandToken = curToken
+      readToken()
+      getCroissantBrand(brandToken)
+    } else {
+      Products.croissants("")
     }
 
   def parseCommand: ExprTree = {
@@ -73,55 +91,27 @@ class Parser(tokenizer: Tokenizer) {
           // This means if you write anything that doesn't resolve to a brand, it will be interpreted as the default brand
           // e.g : Bonjour je voudrais 2 bières balala => Bière Boxer
           // Bonjour je voudrais 2 bières voudrais => Bière Boxer
-          if (curToken != EOL && !(curToken == ET || curToken == OU)) {
-            val beer = getBeerBrand
-            readToken()
-            curToken match {
-              case ET =>
-                readToken()
-                And(Product(beer, numberOfProducts), parseCommand)
-              case OU =>
-                readToken()
-                Or(Product(beer, numberOfProducts), parseCommand)
-              case _ => Product(beer, numberOfProducts)
-            }
-          } else {
-            val beer = Products.beers("")
-            curToken match {
-              case ET =>
-                readToken()
-                And(Product(beer, numberOfProducts), parseCommand)
-              case OU =>
-                readToken()
-                Or(Product(beer, numberOfProducts), parseCommand)
-              case _ => Product(beer, numberOfProducts)
-            }
+          val beer = checkForBeerBrand
+          curToken match {
+            case ET =>
+              readToken()
+              And(Product(beer, numberOfProducts), parseCommand)
+            case OU =>
+              readToken()
+              Or(Product(beer, numberOfProducts), parseCommand)
+            case _ => Product(beer, numberOfProducts)
           }
         case CROISSANT =>
           readToken()
-          if (curToken != EOL && !(curToken == ET || curToken == OU)) {
-            val croissant = getCroissantBrand
-            readToken()
-            curToken match {
-              case ET =>
-                readToken()
-                And(Product(croissant, numberOfProducts), parseCommand)
-              case OU =>
-                readToken()
-                Or(Product(croissant, numberOfProducts), parseCommand)
-              case _ => Product(croissant, numberOfProducts)
-            }
-          } else {
-            val croissant = Products.croissants("")
-            curToken match {
-              case ET =>
-                readToken()
-                And(Product(croissant, numberOfProducts), parseCommand)
-              case OU =>
-                readToken()
-                Or(Product(croissant, numberOfProducts), parseCommand)
-              case _ => Product(croissant, numberOfProducts)
-            }
+          val croissant = checkForCroissantBrand
+          curToken match {
+            case ET =>
+              readToken()
+              And(Product(croissant, numberOfProducts), parseCommand)
+            case OU =>
+              readToken()
+              Or(Product(croissant, numberOfProducts), parseCommand)
+            case _ => Product(croissant, numberOfProducts)
           }
         case _ => expected(BIERE, CROISSANT)
       }
@@ -162,7 +152,6 @@ class Parser(tokenizer: Tokenizer) {
         case VOULOIR =>
           eat(VOULOIR)
           eat(COMMAND)
-          // TODO: recursive function for order to handle and / or
           Command(parseCommand)
       }
     }
