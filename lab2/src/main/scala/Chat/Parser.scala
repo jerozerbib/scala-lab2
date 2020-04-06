@@ -23,8 +23,8 @@ class Parser(tokenizer: Tokenizer) {
   // TODO (BONUS): find a way to display the string value of the tokens (e.g. "BIERE") instead of their integer value (e.g. 6).
   private def expected(token: Token, more: Token*): Nothing =
     fatalError(" expected: " +
-      (token :: more.toList).mkString(" or ") +
-      ", found: " + curToken)
+      (token._2 :: more.map(_._2).toList).mkString(" or ") +
+      ", found: " + curToken._2)
 
   def fatalError(msg: String): Nothing = {
     println("Fatal error", msg)
@@ -152,6 +152,7 @@ class Parser(tokenizer: Tokenizer) {
           eat(VOULOIR)
           eat(COMMAND)
           Command(parseCommand)
+        case _ => expected(ETRE, ME, VOULOIR)
       }
     }
     else expected(BONJOUR, JE)
