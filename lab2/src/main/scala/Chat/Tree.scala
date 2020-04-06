@@ -1,5 +1,7 @@
 package Chat
 
+import Data.UsersInfo
+
 // TODO - step 3
 object Tree {
 
@@ -28,13 +30,27 @@ object Tree {
       case Hungry() => "Pas de soucis, nous pouvons notamment vous offrir des croissants faits maisons !"
       case Pseudonym(pseudo: String) => "Bonjour " + pseudo
 
-      case Command(e) => "Bah voilà " + e.reply + " pour un total de " + e.computePrice + " CHF. Enjoy!"
+      case Command(e) =>
+        // Check if user is identified first
+        if (!UsersInfo.thereIsAnActiveUser()) {
+          "Veuillez d'abord vous identifier."
+        } else {
+          // Compute the price of the purchase
+          val orderPrice = e.computePrice
+          // Check if the user has enough in his account
+          if (orderPrice > UsersInfo.getUserAccount) {
+            "Désolé, on peut pas vour servir. Vous avez pas assez dans votre compte."
+          } else {
+            val newAccountBalance = UsersInfo.activeUserPurchase(orderPrice)
+            "Bah voilà " + e.reply + " pour un total de " + orderPrice + " CHF et " +
+              "votre nouveau solde et de " + newAccountBalance + " CHF. Enjoy!"
+          }
+        }
       case Beer((name, _), numberOfProducts) => numberOfProducts +
         (if (numberOfProducts > 1) " bières " else " bière " ) + name
       case Croissant((name, _), numberOfProducts) => numberOfProducts +
         (if (numberOfProducts > 1) " croissants " else " croissant " ) + name
       case And(e1, e2) => e1.reply + " et " + e2.reply
-        // TODO: Right or left Associativity ???
       case Or(e1, e2) => if (e1.computePrice < e2.computePrice) e1.reply else e2.reply
     }
   }
@@ -50,12 +66,11 @@ object Tree {
   case class Pseudonym(pseudo: String) extends ExprTree
 
   case class Command(products: ExprTree) extends ExprTree
-  case class Product2(product: (String, Double), numberOfProducts: Int) extends ExprTree
 
   class Product(product: (String, Double), numberOfProducts: Int) extends ExprTree {
     override def computePrice: Double = product._2 * numberOfProducts
   }
-  
+
   case class Beer(product: (String, Double), numberOfProducts: Int) extends Product(product, numberOfProducts)
   case class Croissant(product: (String, Double), numberOfProducts: Int) extends Product(product, numberOfProducts)
 

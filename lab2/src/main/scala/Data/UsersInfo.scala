@@ -11,6 +11,20 @@ object UsersInfo {
   private var accounts = collection.mutable.Map[String, Double]()
 
   /**
+    * Check if there is an active user.
+    * @return true if there is an active user
+    */
+  def thereIsAnActiveUser(): Boolean = {
+    _activeUser != null
+  }
+
+  /**
+    * Get the account balance of a user.
+    * @return the account balance of a user
+    */
+  def getUserAccount: Double = accounts(_activeUser)
+
+  /**
     * Register a new user with a default account balance of 30 CHF.
     * @param user the user to save
     */
@@ -20,6 +34,13 @@ object UsersInfo {
     }
     _activeUser = user
   }
+
+  /**
+    * Carry out a purchase on the active user
+    * @param amount the value of the purchase
+    * @return the current account balancer of the active user after purchase
+    */
+  def activeUserPurchase(amount: Double): Double = purchase(_activeUser, amount)
 
   /**
     * Update an account by decreasing its balance.
