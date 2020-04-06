@@ -77,4 +77,8 @@ object Tree {
   case class And(e1: ExprTree, e2: ExprTree) extends ExprTree
   case class Or(e1: ExprTree, e2: ExprTree) extends ExprTree
 
+  // TODO (Jeremy)
+  case class Price(products: ExprTree) extends ExprTree
+  case class Balance() extends ExprTree
+
 }

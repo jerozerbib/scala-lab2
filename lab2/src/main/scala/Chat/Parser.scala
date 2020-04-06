@@ -80,7 +80,6 @@ class Parser(tokenizer: Tokenizer) {
     }
 
   def parseCommand: ExprTree = {
-    // TODO: refactor!!
     if (curToken == NUM) {
       val numberOfProducts = curValue.toInt
       readToken()
@@ -122,7 +121,7 @@ class Parser(tokenizer: Tokenizer) {
 
   /** the root method of the parser: parses an entry phrase */
   def parsePhrases() : ExprTree = {
-    // TODO: handle user identification for commands and account inquiries
+    // TODO Jeremy: Handle account inquiries and prices inquiries
     if (curToken == BONJOUR) eat(BONJOUR)
     if (curToken == JE) {
       eat(JE)
