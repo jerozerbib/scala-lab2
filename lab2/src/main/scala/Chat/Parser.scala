@@ -43,6 +43,91 @@ class Parser(tokenizer: Tokenizer) {
     Pseudonym(name)
   }
 
+  def getBeerBrand: (String, Double) =
+  // Search for brands
+    curToken match {
+      case FARMER => Products.beers("farmer")
+      case BOXER => Products.beers("")
+      case WITTEKOP => Products.beers("wittekop")
+      case PUNKIPA => Products.beers("punkipa")
+      case JACKHAMMER => Products.beers("jackhammer")
+      case TENEBREUSE => Products.beers("tenebreuse")
+      case _ => Products.beers("")
+    }
+
+  def getCroissantBrand: (String, Double) =
+  // Search for brands
+    curToken match {
+      case MAISON => Products.croissants("")
+      case CAILLER => Products.croissants("cailler")
+      case _ => Products.croissants("")
+    }
+
+  def parseCommand: ExprTree = {
+    // TODO: refactor!!
+    if (curToken == NUM) {
+      val numberOfProducts = curValue.toInt
+      readToken()
+      curToken match {
+        case BIERE =>
+          readToken()
+          if (curToken != EOL && !(curToken == ET || curToken == OU)) {
+            val beer = getBeerBrand
+            readToken()
+            curToken match {
+              case ET =>
+                readToken()
+                And(Command(beer, numberOfProducts), parseCommand)
+              case OU =>
+                readToken()
+                Or(Command(beer, numberOfProducts), parseCommand)
+              case _ => Command(beer, numberOfProducts)
+            }
+          } else {
+            val beer = Products.beers("")
+            curToken match {
+              case ET =>
+                readToken()
+                And(Command(beer, numberOfProducts), parseCommand)
+              case OU =>
+                readToken()
+                Or(Command(beer, numberOfProducts), parseCommand)
+              case _ => Command(beer, numberOfProducts)
+            }
+          }
+        case CROISSANT =>
+          readToken()
+          if (curToken != EOL && !(curToken == ET || curToken == OU)) {
+            val croissant = getCroissantBrand
+            readToken()
+            curToken match {
+              case ET =>
+                readToken()
+                And(Command(croissant, numberOfProducts), parseCommand)
+              case OU =>
+                readToken()
+                Or(Command(croissant, numberOfProducts), parseCommand)
+              case _ => Command(croissant, numberOfProducts)
+            }
+          } else {
+            val croissant = Products.croissants("")
+            curToken match {
+              case ET =>
+                readToken()
+                And(Command(croissant, numberOfProducts), parseCommand)
+              case OU =>
+                readToken()
+                Or(Command(croissant, numberOfProducts), parseCommand)
+              case _ => Command(croissant, numberOfProducts)
+            }
+          }
+        case _ => expected(BIERE, CROISSANT)
+      }
+    } else {
+      expected(NUM)
+    }
+  }
+
   /** the root method of the parser: parses an entry phrase */
   def parsePhrases() : ExprTree = {
     // TODO: handle user identification for commands and account inquiries
@@ -73,44 +158,10 @@ class Parser(tokenizer: Tokenizer) {
             expected(PSEUDO)
           }
         case VOULOIR =>
-          // TODO: recursive function for order to handle and / or
           eat(VOULOIR)
           eat(COMMAND)
-          if (curToken == NUM) {
-            val numberOfProducts = curValue.toInt
-            readToken()
-            curToken match {
-              case BIERE =>
-                readToken()
-                if (curToken != EOL) {
-                  // Search for brands
-                  curToken match {
-                    case FARMER => Command(Products.beers("farmer"), numberOfProducts)
-                    case BOXER => Command(Products.beers(""), numberOfProducts)
-                    case WITTEKOP => Command(Products.beers("wittekop"), numberOfProducts)
-                    case PUNKIPA => Command(Products.beers("punkipa"), numberOfProducts)
-                    case JACKHAMMER => Command(Products.beers("jackhammer"), numberOfProducts)
-                    case TENEBREUSE => Command(Products.beers("tenebreuse"), numberOfProducts)
-                  }
-                } else {
-                  Command(Products.beers(""), numberOfProducts)
-                }
-              case CROISSANT =>
-                readToken()
-                if (curToken != EOL) {
-                  // Search for brands
-                  curToken match {
-                    case MAISON => Command(Products.croissants(""), numberOfProducts)
-                    case CAILLER => Command(Products.beers("cailler"), numberOfProducts)
-                  }
-                } else {
-                  Command(Products.croissants(""), numberOfProducts)
-                }
-              case _ => expected(BIERE, CROISSANT)
-            }
-          } else {
-            expected(NUM)
-          }
+          // TODO: recursive function for order to handle and / or
+          parseCommand
       }
     }
     else expected(BONJOUR, JE)

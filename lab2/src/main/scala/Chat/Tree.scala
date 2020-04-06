@@ -29,7 +29,10 @@ object Tree {
       case Hungry() => "Pas de soucis, nous pouvons notamment vous offrir des croissants faits maisons !"
       case Pseudonym(pseudo: String) => "Bonjour " + pseudo
       case Command((name, _), numberOfProducts) => "Bah voilà, " + numberOfProducts + " " + name +
-        "! Cela coûte " + computePrice + " CHF"
+        "! Cela coûte " + computePrice + " CHF."
+      case And(e1, e2) => e1.reply + " " + e2.reply + " pour un total de " + computePrice + " CHF. Enjoy!"
+        // TODO: Right or left Associativity ???
+      case Or(e1, e2) => if (e1.computePrice < e2.computePrice) e1.reply else e2.reply
     }
   }
 
@@ -44,6 +47,7 @@ object Tree {
   case class Pseudonym(pseudo: String) extends ExprTree
 
   case class Command(product: (String, Double), numberOfProducts: Int) extends ExprTree
+  // TODO: inheritance of case classes ???
   case class Beer(numberOfProducts: Int, value: Double) extends ExprTree
   case class Croissant(numberOfProducts: Int, value: Double) extends ExprTree
 
