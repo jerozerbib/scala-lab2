@@ -14,7 +14,6 @@ object Tree {
       * @return the result of the computation
       */
     def computePrice: Double = this match {
-      case Product((_, value), numberOfProducts) => numberOfProducts * value
       case And(e1, e2) => e1.computePrice + e2.computePrice
       case Or(e1, e2) => Math.min(e1.computePrice, e2.computePrice)     // Or takes the cheapest of all products
     }
@@ -30,7 +29,10 @@ object Tree {
       case Pseudonym(pseudo: String) => "Bonjour " + pseudo
 
       case Command(e) => "Bah voilà " + e.reply + " pour un total de " + e.computePrice + " CHF. Enjoy!"
-      case Product((name, _), numberOfProducts) => numberOfProducts + " " + name
+      case Beer((name, _), numberOfProducts) => numberOfProducts +
+        (if (numberOfProducts > 1) " bières " else " bière " ) + name
+      case Croissant((name, _), numberOfProducts) => numberOfProducts +
+        (if (numberOfProducts > 1) " croissants " else " croissant " ) + name
       case And(e1, e2) => e1.reply + " et " + e2.reply
         // TODO: Right or left Associativity ???
       case Or(e1, e2) => if (e1.computePrice < e2.computePrice) e1.reply else e2.reply
@@ -48,10 +50,14 @@ object Tree {
   case class Pseudonym(pseudo: String) extends ExprTree
 
   case class Command(products: ExprTree) extends ExprTree
-  case class Product(product: (String, Double), numberOfProducts: Int) extends ExprTree
-  // TODO: inheritance of case classes ???
-  //case class Beer(product: (String, Double), numberOfProducts: Int) extends Product
-  //case class Croissant(product: (String, Double), numberOfProducts: Int) extends Product
+  case class Product2(product: (String, Double), numberOfProducts: Int) extends ExprTree
+
+  class Product(product: (String, Double), numberOfProducts: Int) extends ExprTree {
+    override def computePrice: Double = product._2 * numberOfProducts
+  }
+  
+  case class Beer(product: (String, Double), numberOfProducts: Int) extends Product(product, numberOfProducts)
+  case class Croissant(product: (String, Double), numberOfProducts: Int) extends Product(product, numberOfProducts)
 
   case class And(e1: ExprTree, e2: ExprTree) extends ExprTree
   case class Or(e1: ExprTree, e2: ExprTree) extends ExprTree

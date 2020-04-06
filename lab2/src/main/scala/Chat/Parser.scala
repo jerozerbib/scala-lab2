@@ -95,11 +95,11 @@ class Parser(tokenizer: Tokenizer) {
           curToken match {
             case ET =>
               readToken()
-              And(Product(beer, numberOfProducts), parseCommand)
+              And(Beer(beer, numberOfProducts), parseCommand)
             case OU =>
               readToken()
-              Or(Product(beer, numberOfProducts), parseCommand)
-            case _ => Product(beer, numberOfProducts)
+              Or(Beer(beer, numberOfProducts), parseCommand)
+            case _ => Beer(beer, numberOfProducts)
           }
         case CROISSANT =>
           readToken()
@@ -107,11 +107,11 @@ class Parser(tokenizer: Tokenizer) {
           curToken match {
             case ET =>
               readToken()
-              And(Product(croissant, numberOfProducts), parseCommand)
+              And(Croissant(croissant, numberOfProducts), parseCommand)
             case OU =>
               readToken()
-              Or(Product(croissant, numberOfProducts), parseCommand)
-            case _ => Product(croissant, numberOfProducts)
+              Or(Croissant(croissant, numberOfProducts), parseCommand)
+            case _ => Croissant(croissant, numberOfProducts)
           }
         case _ => expected(BIERE, CROISSANT)
       }
