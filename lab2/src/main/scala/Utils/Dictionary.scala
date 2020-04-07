@@ -52,6 +52,9 @@ object Dictionary {
     "la" -> "le",
     "prix" -> "prix",
     "de" -> "de",
-    "des" -> "de"
+    "des" -> "de",
+    "mon" -> "mon",
+    "ma" -> "mon",
+    "mes" -> "mon"
   )
 }
