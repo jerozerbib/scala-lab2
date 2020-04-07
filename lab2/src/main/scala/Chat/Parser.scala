@@ -6,11 +6,13 @@ import Tree._
 
 // TODO - step 4
 class Parser(tokenizer: Tokenizer) {
+
   import tokenizer._
 
   var curTuple: (String, Token) = ("unknown", UNKNOWN)
-  
+
   def curValue: String = curTuple._1
+
   def curToken: Token = curTuple._2
 
   /** Reads the next token and assigns it into the global variable curTuple */
@@ -34,6 +36,7 @@ class Parser(tokenizer: Tokenizer) {
 
   /**
     * Handle identification case class
+    *
     * @return a Pseudonym case class with the pseudonym value
     */
   def handleIdentification(): ExprTree = {
@@ -80,6 +83,7 @@ class Parser(tokenizer: Tokenizer) {
     }
 
   def parseCommand: ExprTree = {
+    // TODO: refactor
     if (curToken == NUM) {
       val numberOfProducts = curValue.toInt
       readToken()
@@ -120,44 +124,69 @@ class Parser(tokenizer: Tokenizer) {
   }
 
   /** the root method of the parser: parses an entry phrase */
-  def parsePhrases() : ExprTree = {
-    // TODO Jeremy: Handle account inquiries and prices inquiries
+  def parsePhrases(): ExprTree = {
     if (curToken == BONJOUR) eat(BONJOUR)
-    if (curToken == JE) {
-      eat(JE)
-      curToken match {
-        case ETRE =>
-          eat(ETRE)
-          curToken match {
-            case ASSOIFFE =>
-              // Here we do not "eat" the token, because we want to have a custom 2-parameters "expected" if the user gave a wrong token.
-              readToken()
-              Thirsty()
-            case AFFAME =>
-              readToken()
-              Hungry()
-            case PSEUDO =>
+
+    curToken match {
+      case JE =>
+        eat(JE)
+        curToken match {
+          case ETRE =>
+            eat(ETRE)
+            curToken match {
+              case ASSOIFFE =>
+                // Here we do not "eat" the token, because we want to have a custom 2-parameters "expected" if the user gave a wrong token.
+                readToken()
+                Thirsty()
+              case AFFAME =>
+                readToken()
+                Hungry()
+              case PSEUDO =>
+                handleIdentification()
+              case _ => expected(ASSOIFFE, AFFAME, PSEUDO)
+            }
+          case ME =>
+            eat(ME)
+            eat(APPELLE)
+            if (curToken == PSEUDO) {
               handleIdentification()
-            case _ => expected(ASSOIFFE, AFFAME, PSEUDO)
-          }
-        case ME =>
-          eat(ME)
-          eat(APPELLE)
-          if (curToken == PSEUDO) {
-            handleIdentification()
-          } else {
-            expected(PSEUDO)
-          }
-        case VOULOIR =>
-          eat(VOULOIR)
-          eat(COMMAND)
-          Command(parseCommand)
-        case _ => expected(ETRE, ME, VOULOIR)
-      }
+            } else {
+              expected(PSEUDO)
+            }
+          case VOULOIR =>
+            eat(VOULOIR)
+            if (curToken == COMMAND) {
+              eat(COMMAND)
+              Command(parseCommand)
+            } else if (curToken == CONNAITRE) {
+              eat(CONNAITRE)
+              eat(MON)
+              eat(SOLDE)
+              Balance()
+            } else {
+              expected(CONNAITRE, COMMAND)
+            }
+          case _ => expected(ETRE, ME, VOULOIR)
+        }
+
+      case COMBIEN =>
+        eat(COMBIEN)
+        eat(COUTE)
+        Price(parseCommand)
+
+      case QUEL =>
+        eat(QUEL)
+        eat(EST)
+        eat(LE)
+        eat(PRIX)
+        eat(DE)
+        Price(parseCommand)
+
+      case _ => expected(BONJOUR, JE, COMBIEN, QUEL)
     }
-    else expected(BONJOUR, JE)
   }
 
   // Start the process by reading the first token.
   readToken()
 }
+

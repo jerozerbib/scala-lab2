@@ -6,7 +6,7 @@ import Utils.SpellChecker._
 
 class Tokenizer(input: String) {
   var tokens: Array[(String, Token)] = Array()
-  var currentTokenIndex = -1
+  var currentTokenIndex: Int = -1
 
   private def getTokenFromString(s: String): Token = s match {
     case "bonjour" => BONJOUR
@@ -31,6 +31,8 @@ class Tokenizer(input: String) {
     case "tenebreuse" => TENEBREUSE
     case "commande" => COMMAND
     case "connaître" => CONNAITRE
+    case "mon" => MON
+    case "solde" => SOLDE
     case "combien" => COMBIEN
     case "coûte" => COUTE
     case "quel" => QUEL
@@ -60,7 +62,7 @@ class Tokenizer(input: String) {
   def nextToken(): (String, Token) = {
     currentTokenIndex += 1
 
-    if (currentTokenIndex < tokens.size) tokens(currentTokenIndex)
+    if (currentTokenIndex < tokens.length) tokens(currentTokenIndex)
     else ("EOL", EOL)
   }
 }

@@ -39,6 +39,7 @@ object Tokens {
   val COMMAND: Token     = (24, "COMMAND")
   // Balance
   val CONNAITRE: Token   = (25, "CONNAITRE")
+  val MON: Token         = (34, "MON")
   val SOLDE: Token       = (26, "SOLDE")
   // Price
   val QUEL: Token        = (27, "QUEL")

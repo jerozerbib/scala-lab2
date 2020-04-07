@@ -43,7 +43,7 @@ object Tree {
           } else {
             val newAccountBalance = UsersInfo.activeUserPurchase(orderPrice)
             "Bah voilà " + e.reply + " pour un total de " + orderPrice + " CHF et " +
-              "votre nouveau solde et de " + newAccountBalance + " CHF. Enjoy!"
+              "votre nouveau solde est de " + newAccountBalance + " CHF. Enjoy!"
           }
         }
       case Beer((name, _), numberOfProducts) => numberOfProducts +
@@ -52,6 +52,12 @@ object Tree {
         (if (numberOfProducts > 1) " croissants " else " croissant " ) + name
       case And(e1, e2) => e1.reply + " et " + e2.reply
       case Or(e1, e2) => if (e1.computePrice < e2.computePrice) e1.reply else e2.reply
+      case Balance() =>
+        if (!UsersInfo.thereIsAnActiveUser())
+          "Veuillez d'abord vous authentifier"
+        else
+          "Le montant actuel de votre solde est de " + UsersInfo.getUserAccount + " CHF."
+      case Price(e) => "Cela coûte " + e.computePrice + "CHF"
     }
   }
 
@@ -77,8 +83,8 @@ object Tree {
   case class And(e1: ExprTree, e2: ExprTree) extends ExprTree
   case class Or(e1: ExprTree, e2: ExprTree) extends ExprTree
 
-  // TODO (Jeremy)
   case class Price(products: ExprTree) extends ExprTree
   case class Balance() extends ExprTree
 
 }
+

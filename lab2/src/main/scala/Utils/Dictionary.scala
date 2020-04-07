@@ -41,6 +41,7 @@ object Dictionary {
     "commande" -> "commande",
     "connaitre" -> "connaître",
     "connaître" -> "connaître",
+    "solde" -> "solde",
     "combien" -> "combien",
     "coûte" -> "coûte",
     "coûtent" -> "coûte",
@@ -52,6 +53,9 @@ object Dictionary {
     "la" -> "le",
     "prix" -> "prix",
     "de" -> "de",
-    "des" -> "de"
+    "des" -> "de",
+    "mon" -> "mon",
+    "ma" -> "mon",
+    "mes" -> "mon"
   )
 }
