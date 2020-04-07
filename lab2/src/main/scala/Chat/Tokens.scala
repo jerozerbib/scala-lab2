@@ -48,4 +48,5 @@ object Tokens {
   val DE: Token          = (31, "DE")
   val COMBIEN: Token     = (32, "COMBIEN")
   val COUTE: Token       = (33, "COUTE")
+  val COUTENT: Token     = (33, "COUTENT")
 }
