@@ -41,6 +41,7 @@ object Dictionary {
     "commande" -> "commande",
     "connaitre" -> "connaître",
     "connaître" -> "connaître",
+    "solde" -> "solde",
     "combien" -> "combien",
     "coûte" -> "coûte",
     "coûtent" -> "coûte",

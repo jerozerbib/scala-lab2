@@ -32,6 +32,7 @@ class Tokenizer(input: String) {
     case "commande" => COMMAND
     case "connaître" => CONNAITRE
     case "mon" => MON
+    case "solde" => SOLDE
     case "combien" => COMBIEN
     case "coûte" => COUTE
     case "quel" => QUEL
