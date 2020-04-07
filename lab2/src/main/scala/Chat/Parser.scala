@@ -158,11 +158,7 @@ class Parser(tokenizer: Tokenizer) {
             Command(parseCommand)
           } else if (curToken == CONNAITRE) {
             eat(CONNAITRE)
-            if (curToken != MON)
-              expected(MON)
             eat(MON)
-            if (curToken != SOLDE)
-              expected(SOLDE)
             eat(SOLDE)
             Balance()
           } else {
@@ -177,25 +173,14 @@ class Parser(tokenizer: Tokenizer) {
         case COUTE =>
           eat(COUTE)
           Price(parseCommand)
-        case COUTENT =>
-          eat(COUTENT)
-          Price(parseCommand)
-        case _ => expected(COUTENT, COUTE)
+        case _ => expected(COUTE)
       }
-    }
+    } else 
     if (curToken == QUEL) {
       eat(QUEL)
-      if (curToken != EST)
-        expected(EST)
       eat(EST)
-      if (curToken != LE)
-        expected(LE)
       eat(LE)
-      if (curToken != PRIX)
-        expected(PRIX)
       eat(PRIX)
-      if (curToken != DE)
-        expected(DE)
       eat(DE)
       Price(parseCommand)
     }
