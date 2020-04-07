@@ -6,11 +6,13 @@ import Tree._
 
 // TODO - step 4
 class Parser(tokenizer: Tokenizer) {
+
   import tokenizer._
 
   var curTuple: (String, Token) = ("unknown", UNKNOWN)
-  
+
   def curValue: String = curTuple._1
+
   def curToken: Token = curTuple._2
 
   /** Reads the next token and assigns it into the global variable curTuple */
@@ -34,6 +36,7 @@ class Parser(tokenizer: Tokenizer) {
 
   /**
     * Handle identification case class
+    *
     * @return a Pseudonym case class with the pseudonym value
     */
   def handleIdentification(): ExprTree = {
@@ -120,7 +123,7 @@ class Parser(tokenizer: Tokenizer) {
   }
 
   /** the root method of the parser: parses an entry phrase */
-  def parsePhrases() : ExprTree = {
+  def parsePhrases(): ExprTree = {
     // TODO Jeremy: Handle account inquiries and prices inquiries
     if (curToken == BONJOUR) eat(BONJOUR)
     if (curToken == JE) {
@@ -150,14 +153,56 @@ class Parser(tokenizer: Tokenizer) {
           }
         case VOULOIR =>
           eat(VOULOIR)
-          eat(COMMAND)
-          Command(parseCommand)
+          if (curToken == COMMAND) {
+            eat(COMMAND)
+            Command(parseCommand)
+          } else if (curToken == CONNAITRE) {
+            eat(CONNAITRE)
+            if (curToken != MON)
+              expected(MON)
+            eat(MON)
+            if (curToken != SOLDE)
+              expected(SOLDE)
+            eat(SOLDE)
+            Balance()
+          } else {
+            expected(CONNAITRE, COMMAND)
+          }
         case _ => expected(ETRE, ME, VOULOIR)
       }
     }
-    else expected(BONJOUR, JE)
+    if (curToken == COMBIEN) {
+      eat(COMBIEN)
+      curToken match {
+        case COUTE =>
+          eat(COUTE)
+          Price(parseCommand)
+        case COUTENT =>
+          eat(COUTENT)
+          Price(parseCommand)
+        case _ => expected(COUTENT, COUTE)
+      }
+    }
+    if (curToken == QUEL) {
+      eat(QUEL)
+      if (curToken != EST)
+        expected(EST)
+      eat(EST)
+      if (curToken != LE)
+        expected(LE)
+      eat(LE)
+      if (curToken != PRIX)
+        expected(PRIX)
+      eat(PRIX)
+      if (curToken != DE)
+        expected(DE)
+      eat(DE)
+      Price(parseCommand)
+    }
+    else expected(BONJOUR, JE, COMBIEN, QUEL)
   }
 
   // Start the process by reading the first token.
   readToken()
 }
+

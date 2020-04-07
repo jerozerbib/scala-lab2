@@ -52,6 +52,12 @@ object Tree {
         (if (numberOfProducts > 1) " croissants " else " croissant " ) + name
       case And(e1, e2) => e1.reply + " et " + e2.reply
       case Or(e1, e2) => if (e1.computePrice < e2.computePrice) e1.reply else e2.reply
+      case Balance() =>
+        if (!UsersInfo.thereIsAnActiveUser())
+          "Veuillez d'abord vous authentifier"
+        else
+          "Le montant actuel de votre solde est de " + UsersInfo.getUserAccount
+      case Price(e) => e.reply + " pour un total de : " + e.computePrice + "CHF"
     }
   }
 
@@ -82,3 +88,4 @@ object Tree {
   case class Balance() extends ExprTree
 
 }
+
