@@ -49,7 +49,7 @@ class Parser(tokenizer: Tokenizer) {
   /**
     * Gets the beer's brand's name and price
     * @param beerBrandToken
-    * @return A map with the name and the price of a product
+    * @return A tuple with the name and the price of a beer
     */
   def getBeerBrand(beerBrandToken: Token): (String, Double) =
     beerBrandToken match {
@@ -65,7 +65,7 @@ class Parser(tokenizer: Tokenizer) {
   /**
     * Gets the croissant's brand's name and price
     * @param croissantBrandToken
-    * @return A map with the name and the price of a product
+    * @return A tuple with the name and the price of a croissant
     */
   def getCroissantBrand(croissantBrandToken: Token): (String, Double) =
     croissantBrandToken match {
@@ -117,33 +117,31 @@ class Parser(tokenizer: Tokenizer) {
           // e.g : Bonjour je voudrais 2 bières balala => Bière Boxer
           // Bonjour je voudrais 2 bières voudrais => Bière Boxer
           val beer = checkForBeerBrand
-          checksForAssociation(numberOfProducts, beer)
+          curToken match {
+            case ET =>
+              readToken()
+              And(Beer(beer, numberOfProducts), parseCommand)
+            case OU =>
+              readToken()
+              Or(Beer(beer, numberOfProducts), parseCommand)
+            case _ => Beer(beer, numberOfProducts)
+          }
         case CROISSANT =>
           readToken()
           val croissant = checkForCroissantBrand
-          checksForAssociation(numberOfProducts, croissant)
+          curToken match {
+            case ET =>
+              readToken()
+              And(Croissant(croissant, numberOfProducts), parseCommand)
+            case OU =>
+              readToken()
+              Or(Croissant(croissant, numberOfProducts), parseCommand)
+            case _ => Croissant(croissant, numberOfProducts)
+          }
         case _ => expected(BIERE, CROISSANT)
       }
     } else {
       expected(NUM)
-    }
-  }
-
-  /**
-    * Checks if the token is an association with "ET", "OU" or a simple command
-    * @param numberOfProducts The quantity of the asked product
-    * @param product The product wanted
-    * @return
-    */
-  private def checksForAssociation(numberOfProducts: Int, product: (String, Double)) = {
-    curToken match {
-      case ET =>
-        readToken()
-        And(Beer(product, numberOfProducts), parseCommand)
-      case OU =>
-        readToken()
-        Or(Beer(product, numberOfProducts), parseCommand)
-      case _ => Beer(product, numberOfProducts)
     }
   }
 
