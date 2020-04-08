@@ -7,7 +7,6 @@ object UsersInfo {
   // Will contain the name of the currently active user; default value is null.
   private var _activeUser: String = _
 
-  // TODO: step 2 - create an attribute that will contain each user and its current balance.
   private val accounts = collection.mutable.Map[String, Double]()
 
   /**
@@ -48,7 +47,6 @@ object UsersInfo {
     * @param amount the amount to decrease
     * @return the new balance
     */
-  // TODO: step 2
   def purchase(user: String, amount: Double): Double = {
     val newAmount  = accounts(user) - amount
     accounts(user) = newAmount

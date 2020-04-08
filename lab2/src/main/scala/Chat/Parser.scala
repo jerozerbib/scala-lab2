@@ -4,7 +4,6 @@ import Chat.Tokens._
 import Data.{Products, UsersInfo}
 import Tree._
 
-// TODO - step 4
 class Parser(tokenizer: Tokenizer) {
 
   import tokenizer._
@@ -22,7 +21,6 @@ class Parser(tokenizer: Tokenizer) {
   private def eat(token: Token): Unit = if (token == curToken) readToken() else expected(token)
 
   /** Complains that what was found was not expected. The method accepts arbitrarily many arguments of type TokenClass */
-  // TODO (BONUS): find a way to display the string value of the tokens (e.g. "BIERE") instead of their integer value (e.g. 6).
   private def expected(token: Token, more: Token*): Nothing =
     fatalError(" expected: " +
       (token._2 :: more.map(_._2).toList).mkString(" or ") +
@@ -48,7 +46,7 @@ class Parser(tokenizer: Tokenizer) {
 
   /**
     * Gets the beer's brand's name and price
-    * @param beerBrandToken
+    * @param beerBrandToken Token
     * @return A tuple with the name and the price of a beer
     */
   def getBeerBrand(beerBrandToken: Token): (String, Double) =
@@ -64,7 +62,7 @@ class Parser(tokenizer: Tokenizer) {
 
   /**
     * Gets the croissant's brand's name and price
-    * @param croissantBrandToken
+    * @param croissantBrandToken Tokem
     * @return A tuple with the name and the price of a croissant
     */
   def getCroissantBrand(croissantBrandToken: Token): (String, Double) =
@@ -105,7 +103,6 @@ class Parser(tokenizer: Tokenizer) {
     * @return A tree for a command
     */
   def parseCommand: ExprTree = {
-    // TODO: refactor
     if (curToken == NUM) {
       val numberOfProducts = curValue.toInt
       readToken()

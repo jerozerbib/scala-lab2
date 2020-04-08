@@ -2,7 +2,6 @@ package Chat
 
 import Data.UsersInfo
 
-// TODO - step 3
 object Tree {
 
   /**
