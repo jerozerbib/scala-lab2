@@ -9,10 +9,12 @@ object ClinksCalculator {
   def factorial(n: Int): Int = {
     /**
       * tail-recursive implementation
+      *
       * @param n the number to evaluate
       * @param acc accumulator
       * @return n!
       */
+    @scala.annotation.tailrec
     def facto_r(n: Int, acc: Int): Int = n match {
       case 0 => acc
       case _ => facto_r(n - 1, n * acc)

@@ -10,12 +10,11 @@ object Main extends App {
   while (true) {
     StdIn.readLine.toLowerCase match {
       case "adieu" | "adieu." => println("À la revoyure !"); System.exit(0)
-      case "santé !" => {
+      case "santé !" =>
         for (i <- 2 to 6) {
           println(s"Nombre de *clinks* pour un santé de $i personnes : ${calculateCombination(i, 2)}.")
         }
-      }
-      case s => {
+      case s =>
         val tokenizer = new Tokenizer(s)
         tokenizer.tokenize()
 
@@ -24,7 +23,6 @@ object Main extends App {
         val printResult = expr.reply
 
         println(printResult)
-      }
     }
   }
 }

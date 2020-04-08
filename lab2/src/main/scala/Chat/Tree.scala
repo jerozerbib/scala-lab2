@@ -27,8 +27,10 @@ object Tree {
     def reply: String = this match {
       // Example cases
       case Thirsty() => "Eh bien, la chance est de votre côté, car nous offrons les meilleures bières de la région !"
+
       case Hungry() => "Pas de soucis, nous pouvons notamment vous offrir des croissants faits maisons !"
-      case Pseudonym(pseudo: String) => "Bonjour " + pseudo
+
+      case Pseudonym(pseudo: String) => "Bonjour " + pseudo.substring(1)
 
       case Command(e) =>
         // Check if user is identified first
@@ -48,16 +50,21 @@ object Tree {
         }
       case Beer((name, _), numberOfProducts) => numberOfProducts +
         (if (numberOfProducts > 1) " bières " else " bière " ) + name
+
       case Croissant((name, _), numberOfProducts) => numberOfProducts +
         (if (numberOfProducts > 1) " croissants " else " croissant " ) + name
-      case And(e1, e2) => e1.reply + " et " + e2.reply
-      case Or(e1, e2) => if (e1.computePrice < e2.computePrice) e1.reply else e2.reply
-      case Balance() =>
+
+      case And(e1, e2)  => e1.reply + " et " + e2.reply
+
+      case Or(e1, e2)   => if (e1.computePrice < e2.computePrice) e1.reply else e2.reply
+
+      case Balance()    =>
         if (!UsersInfo.thereIsAnActiveUser())
           "Veuillez d'abord vous authentifier"
         else
           "Le montant actuel de votre solde est de " + UsersInfo.getUserAccount + " CHF."
-      case Price(e) => "Cela coûte " + e.computePrice + "CHF"
+
+      case Price(e)     => "Cela coûte " + e.computePrice + "CHF"
     }
   }
 

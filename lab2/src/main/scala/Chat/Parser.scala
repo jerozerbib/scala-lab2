@@ -46,24 +46,38 @@ class Parser(tokenizer: Tokenizer) {
     Pseudonym(name)
   }
 
+  /**
+    * Gets the beer's brand's name and price
+    * @param beerBrandToken
+    * @return A map with the name and the price of a product
+    */
   def getBeerBrand(beerBrandToken: Token): (String, Double) =
     beerBrandToken match {
-      case FARMER => Products.beers("farmer")
-      case BOXER => Products.beers("")
-      case WITTEKOP => Products.beers("wittekop")
-      case PUNKIPA => Products.beers("punkipa")
+      case FARMER     => Products.beers("farmer")
+      case BOXER      => Products.beers("")
+      case WITTEKOP   => Products.beers("wittekop")
+      case PUNKIPA    => Products.beers("punkipa")
       case JACKHAMMER => Products.beers("jackhammer")
       case TENEBREUSE => Products.beers("tenebreuse")
-      case _ => Products.beers("")
+      case _          => Products.beers("")
     }
 
+  /**
+    * Gets the croissant's brand's name and price
+    * @param croissantBrandToken
+    * @return A map with the name and the price of a product
+    */
   def getCroissantBrand(croissantBrandToken: Token): (String, Double) =
     croissantBrandToken match {
-      case MAISON => Products.croissants("")
-      case CAILLER => Products.croissants("cailler")
-      case _ => Products.croissants("")
+      case MAISON   => Products.croissants("")
+      case CAILLER  => Products.croissants("cailler")
+      case _        => Products.croissants("")
     }
 
+  /**
+    * Checks if the token is a beer brand
+    * @return The product if a beer is asked for
+    */
   def checkForBeerBrand: (String, Double) =
     if (curToken != EOL && !(curToken == ET || curToken == OU)) {
       val brandToken = curToken
@@ -73,6 +87,10 @@ class Parser(tokenizer: Tokenizer) {
       Products.beers("")
     }
 
+  /**
+    * Checks if the token is a croissant brand
+    * @return The product if a croissant is asked for
+    */
   def checkForCroissantBrand: (String, Double) =
     if (curToken != EOL && !(curToken == ET || curToken == OU)) {
       val brandToken = curToken
@@ -82,6 +100,10 @@ class Parser(tokenizer: Tokenizer) {
       Products.croissants("")
     }
 
+  /**
+    * Build the Tree from the command asked for by a customer
+    * @return A tree for a command
+    */
   def parseCommand: ExprTree = {
     // TODO: refactor
     if (curToken == NUM) {
@@ -95,27 +117,11 @@ class Parser(tokenizer: Tokenizer) {
           // e.g : Bonjour je voudrais 2 bières balala => Bière Boxer
           // Bonjour je voudrais 2 bières voudrais => Bière Boxer
           val beer = checkForBeerBrand
-          curToken match {
-            case ET =>
-              readToken()
-              And(Beer(beer, numberOfProducts), parseCommand)
-            case OU =>
-              readToken()
-              Or(Beer(beer, numberOfProducts), parseCommand)
-            case _ => Beer(beer, numberOfProducts)
-          }
+          checksForAssociation(numberOfProducts, beer)
         case CROISSANT =>
           readToken()
           val croissant = checkForCroissantBrand
-          curToken match {
-            case ET =>
-              readToken()
-              And(Croissant(croissant, numberOfProducts), parseCommand)
-            case OU =>
-              readToken()
-              Or(Croissant(croissant, numberOfProducts), parseCommand)
-            case _ => Croissant(croissant, numberOfProducts)
-          }
+          checksForAssociation(numberOfProducts, croissant)
         case _ => expected(BIERE, CROISSANT)
       }
     } else {
@@ -123,7 +129,28 @@ class Parser(tokenizer: Tokenizer) {
     }
   }
 
-  /** the root method of the parser: parses an entry phrase */
+  /**
+    * Checks if the token is an association with "ET", "OU" or a simple command
+    * @param numberOfProducts The quantity of the asked product
+    * @param product The product wanted
+    * @return
+    */
+  private def checksForAssociation(numberOfProducts: Int, product: (String, Double)) = {
+    curToken match {
+      case ET =>
+        readToken()
+        And(Beer(product, numberOfProducts), parseCommand)
+      case OU =>
+        readToken()
+        Or(Beer(product, numberOfProducts), parseCommand)
+      case _ => Beer(product, numberOfProducts)
+    }
+  }
+
+  /**
+    * the root method of the parser: parses an entry phrase
+    * @return A Tree with the sentence of the command
+    */
   def parsePhrases(): ExprTree = {
     if (curToken == BONJOUR) eat(BONJOUR)
 

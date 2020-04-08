@@ -8,7 +8,7 @@ object UsersInfo {
   private var _activeUser: String = _
 
   // TODO: step 2 - create an attribute that will contain each user and its current balance.
-  private var accounts = collection.mutable.Map[String, Double]()
+  private val accounts = collection.mutable.Map[String, Double]()
 
   /**
     * Check if there is an active user.
@@ -50,7 +50,7 @@ object UsersInfo {
     */
   // TODO: step 2
   def purchase(user: String, amount: Double): Double = {
-    val newAmount = accounts(user) - amount
+    val newAmount  = accounts(user) - amount
     accounts(user) = newAmount
     newAmount
   }
