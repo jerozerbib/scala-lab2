@@ -62,7 +62,7 @@ class Parser(tokenizer: Tokenizer) {
 
   /**
     * Gets the croissant's brand's name and price
-    * @param croissantBrandToken Tokem
+    * @param croissantBrandToken Token
     * @return A tuple with the name and the price of a croissant
     */
   def getCroissantBrand(croissantBrandToken: Token): (String, Double) =
