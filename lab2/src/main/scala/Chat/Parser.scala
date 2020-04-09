@@ -114,11 +114,12 @@ class Parser(tokenizer: Tokenizer) {
           // e.g : Bonjour je voudrais 2 bières balala => Bière Boxer
           // Bonjour je voudrais 2 bières voudrais => Bière Boxer
           val beer = checkForBeerBrand
-          buildProductsAssociations(beer, numberOfProducts, createBeerNode)
+          buildProductsAssociations(Beer(beer, numberOfProducts))
         case CROISSANT =>
           readToken()
+          // Same comment as above
           val croissant = checkForCroissantBrand
-          buildProductsAssociations(croissant, numberOfProducts, createCroissantNode)
+          buildProductsAssociations(Croissant(croissant, numberOfProducts))
         case _ => expected(BIERE, CROISSANT)
       }
     } else {
@@ -126,22 +127,20 @@ class Parser(tokenizer: Tokenizer) {
     }
   }
 
-  def buildProductsAssociations[P <: Product](product: (String, Double),
-                                              nbProducts: Int,
-                                              f: ((String, Double), Int) => P): ExprTree = {
+  def buildProductsAssociations(product: Product): ExprTree = {
     curToken match {
       case ET =>
+        // If it's an and association
         readToken()
-        And(f(product, nbProducts), parseCommand)
+        And(product, parseCommand)
       case OU =>
+        // If it's an or association
         readToken()
-        Or(f(product, nbProducts), parseCommand)
-      case _ => f(product, nbProducts)
+        Or(product, parseCommand)
+        // If something else then we don't care, we just parse the product that we have (No association).
+      case _ => product
     }
   }
-
-  def createBeerNode(product: (String, Double), nbProducts: Int): Beer = Beer(product, nbProducts)
-  def createCroissantNode(product: (String, Double), nbProducts: Int): Croissant = Croissant(product, nbProducts)
 
   /**
     * the root method of the parser: parses an entry phrase
