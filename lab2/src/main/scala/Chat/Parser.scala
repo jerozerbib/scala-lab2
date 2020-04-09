@@ -127,6 +127,14 @@ class Parser(tokenizer: Tokenizer) {
     }
   }
 
+  /**
+    * Build an expr tree using And/Or Nodes. If not found then just create a product Node.
+    * Note that this is RIGHT ASSOCIATIVE of products. If we want left associativity we just need to reverse the order
+    * of the arguments in the associative nodes that we create (e.g: And(parseCommand, product)
+    * instead of And(product, parseCommand))
+    * @param product the product to associate
+    * @return And node or Or node or Product node
+    */
   def buildProductsAssociations(product: Product): ExprTree = {
     curToken match {
       case ET =>
