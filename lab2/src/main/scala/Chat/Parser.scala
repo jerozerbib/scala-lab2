@@ -114,33 +114,34 @@ class Parser(tokenizer: Tokenizer) {
           // e.g : Bonjour je voudrais 2 bières balala => Bière Boxer
           // Bonjour je voudrais 2 bières voudrais => Bière Boxer
           val beer = checkForBeerBrand
-          curToken match {
-            case ET =>
-              readToken()
-              And(Beer(beer, numberOfProducts), parseCommand)
-            case OU =>
-              readToken()
-              Or(Beer(beer, numberOfProducts), parseCommand)
-            case _ => Beer(beer, numberOfProducts)
-          }
+          buildProductsAssociations(beer, numberOfProducts, createBeerNode)
         case CROISSANT =>
           readToken()
           val croissant = checkForCroissantBrand
-          curToken match {
-            case ET =>
-              readToken()
-              And(Croissant(croissant, numberOfProducts), parseCommand)
-            case OU =>
-              readToken()
-              Or(Croissant(croissant, numberOfProducts), parseCommand)
-            case _ => Croissant(croissant, numberOfProducts)
-          }
+          buildProductsAssociations(croissant, numberOfProducts, createCroissantNode)
         case _ => expected(BIERE, CROISSANT)
       }
     } else {
       expected(NUM)
     }
   }
+
+  def buildProductsAssociations[P <: Product](product: (String, Double),
+                                              nbProducts: Int,
+                                              f: ((String, Double), Int) => P): ExprTree = {
+    curToken match {
+      case ET =>
+        readToken()
+        And(f(product, nbProducts), parseCommand)
+      case OU =>
+        readToken()
+        Or(f(product, nbProducts), parseCommand)
+      case _ => f(product, nbProducts)
+    }
+  }
+
+  def createBeerNode(product: (String, Double), nbProducts: Int): Beer = Beer(product, nbProducts)
+  def createCroissantNode(product: (String, Double), nbProducts: Int): Croissant = Croissant(product, nbProducts)
 
   /**
     * the root method of the parser: parses an entry phrase
